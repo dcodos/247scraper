@@ -13,11 +13,26 @@ def get_one_player(url):
         return None
     tree = html.fromstring(res.content)
     info = tree.xpath("//div[@class='player-info clearfix']")[0]
-    name = info.xpath("//h2")[0].text.strip()
-    location = info.xpath(".//p[@class='location']")[0].text.strip()
-    city = location.split(",", 1)[0]
-    state = location.split(",", 1)[1].split()[0]
-    hs = location.split(",", 1)[1].strip().split(" ", 1)[1].replace("(", "").replace(")", "").strip()
+    try:
+        name = info.xpath("//h2")[0].text.strip()
+    except IndexError:
+        name = "NA"
+    try:
+        location = info.xpath(".//p[@class='location']")[0].text.strip()
+    except IndexError:
+        location = "NA"
+    try:
+        city = location.split(",", 1)[0]
+    except IndexError:
+        city = "NA"
+    try:
+        state = location.split(",", 1)[1].split()[0]
+    except IndexError:
+        state = "NA"
+    try:
+        hs = location.split(",", 1)[1].strip().split(" ", 1)[1].replace("(", "").replace(")", "").strip()
+    except IndexError:
+        hs = "NA"
     try:
         position = info.xpath(".//p[@class='position']/a")[0].text.strip()
     except IndexError:
@@ -103,6 +118,8 @@ def run_full_year(year):
     print("Wrote player info to player_info_" + str(year) + ".csv")
     print("============================================")
 
+
+# Interests: //ul[@class='recruit-interest-index_lst']//div[@class='left']
 if __name__ == "__main__":
     for year in range(2002, 2018):
         run_full_year(year)
