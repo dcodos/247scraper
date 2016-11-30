@@ -54,7 +54,7 @@ def get_player_profile_urls(year):
             print("")
         try:
             tree = html.fromstring(res.content)
-        except etree.ParseError:
+        except etree.ParserError:
             break
         players = tree.xpath("//div[@class='playerinfo_blk']/a")
         for player in players:
