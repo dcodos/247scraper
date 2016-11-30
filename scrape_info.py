@@ -42,6 +42,21 @@ def get_one_player(url):
     return [name, location, city, state, hs, position, height, weight, stars, rating]
 
 
+def get_players_info_from_urls(urls):
+    player_rows = []
+    player_num = 1
+    for url in urls:
+        if player_num % 50 == 0:
+            print(".", end="")
+            sys.stdout.flush()
+        player_row = get_one_player(BASE_PLAYER_URL + url)
+        if player_row is not None:
+            player_rows.append(player_row)
+        player_num += 1
+    print("")
+    return player_rows
+
+
 def get_player_profile_urls(year):
     page = 1
     url_list = []
@@ -50,7 +65,7 @@ def get_player_profile_urls(year):
         res = requests.get(year_url, headers=HEADERS)
         print(".", end="")
         sys.stdout.flush()
-        if page % 20 == 0:
+        if page % 50 == 0:
             print("")
         try:
             tree = html.fromstring(res.content)
@@ -64,35 +79,30 @@ def get_player_profile_urls(year):
     return url_list
 
 
-if __name__ == "__main__":
-    print("-------------------------------------------")
+def run_full_year(year):
+    print("============================================")
     print("Getting list of players")
-    year = 2010
     urls = get_player_profile_urls(year)
     with open("output/player_urls_" + str(year) + ".csv", "w") as f:
         writer = csv.writer(f)
         for url in urls:
             writer.writerow([url])
-    print("-------------------------------------------")
+    print("============================================")
     print("Wrote player urls to player_urls_" + str(year) + ".csv")
-    print("-------------------------------------------")
+    print("============================================")
 
     print("Getting player info")
-    print("-------------------------------------------")
-    player_rows = []
-    player_num = 1
-    for url in urls:
-        print(".", end="")
-        sys.stdout.flush()
-        if player_num % 60 == 0:
-            print("")
-        player_row = get_one_player(BASE_PLAYER_URL + url)
-        player_rows.append(player_row)
-        player_num += 1
-    print("")
+    print("============================================")
+
+    player_rows = get_players_info_from_urls(urls)
+
     with open("output/player_info_" + str(year) + ".csv", "w") as output:
         writer = csv.writer(output)
         writer.writerows(player_rows)
-    print("-------------------------------------------")
+    print("============================================")
     print("Wrote player info to player_info_" + str(year) + ".csv")
-    print("-------------------------------------------")
+    print("============================================")
+
+if __name__ == "__main__":
+    for year in range(2002, 2018):
+        run_full_year(year)
