@@ -69,7 +69,7 @@ if __name__ == "__main__":
     print("Getting list of players")
     year = 2010
     urls = get_player_profile_urls(year)
-    with open("player_urls_" + str(year) + ".csv", "w") as f:
+    with open("output/player_urls_" + str(year) + ".csv", "w") as f:
         writer = csv.writer(f)
         for url in urls:
             writer.writerow([url])
@@ -90,7 +90,7 @@ if __name__ == "__main__":
         player_rows.append(player_row)
         player_num += 1
     print("")
-    with open("player_info_" + str(year) + ".csv", "w") as output:
+    with open("output/player_info_" + str(year) + ".csv", "w") as output:
         writer = csv.writer(output)
         writer.writerows(player_rows)
     print("-------------------------------------------")
