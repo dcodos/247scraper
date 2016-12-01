@@ -74,6 +74,8 @@ def get_interest_urls(trees):
             link = player.xpath("./a[@class='toggle_anc2']")[0].get("href")
             link = link.replace("?view=Complex", "")
             link = link.replace("\"", "")
+            link = link.replace("(", "")
+            link = link.replace(")", "")
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
