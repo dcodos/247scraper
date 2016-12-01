@@ -81,7 +81,9 @@ def get_interest_urls(trees):
 def get_player_interests(url):
     interests = []
     res = requests.get(url, headers=HEADERS)
-    time.sleep(0.5)
+    time.sleep(1)
+    if res.status_code != 200:
+        return None
     try:
         tree = html.fromstring(res.content)
     except etree.ParserError:
@@ -95,7 +97,7 @@ def get_player_interests(url):
             first_blk = interest.xpath(".//div[@class='first_blk']")[0]
         except IndexError:
             print(name + " " + str(len(interest_list)) + " " + url)
-            print(etree.tostring(interest))
+            #print(etree.tostring(interest))
             continue
         school = first_blk.xpath("./a")[0].text.strip()
         status_block = first_blk.xpath("./span[@class='status']")[0]
