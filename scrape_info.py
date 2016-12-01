@@ -2,10 +2,22 @@ import requests
 from lxml import html, etree
 import csv
 import sys
+import time
 
 HEADERS = {'User-Agent': 'request', 'X-Requested-With': 'XMLHttpRequest'}
 BASE_PLAYER_URL = 'http://247sports.com'
 
+
+def print_header():
+    head = """ _____   ___  ______  _____
+/ __  \ /   ||___  / /  ___|
+`' / /'/ /| |   / /  \ `--.  ___ _ __ __ _ _ __   ___ _ __
+  / / / /_| |  / /    `--. \/ __| '__/ _` | '_ \ / _ \ '__|
+./ /__\___  |./ /    /\__/ / (__| | | (_| | |_) |  __/ |
+\_____/   |_/\_/     \____/ \___|_|  \__,_| .__/ \___|_|
+                                          | |
+                                          |_|              """
+    print(head)
 
 def get_year_pages(year):
     pages = []
@@ -66,6 +78,40 @@ def get_interest_urls(trees):
     return url_list
 
 
+def get_player_interests(url):
+    interests = []
+    res = requests.get(url, headers=HEADERS)
+    time.sleep(0.5)
+    try:
+        tree = html.fromstring(res.content)
+    except etree.ParserError:
+        return None
+
+    interest_list = tree.xpath("//ul[@class='recruit-interest-index_lst']/li[not(@class)]")
+    name = tree.xpath("//a[@class='name']")[0].text.strip()
+
+    for interest in interest_list:
+        try:
+            first_blk = interest.xpath(".//div[@class='first_blk']")[0]
+        except IndexError:
+            print(name + " " + str(len(interest_list)) + " " + url)
+            print(etree.tostring(interest))
+            continue
+        school = first_blk.xpath("./a")[0].text.strip()
+        status_block = first_blk.xpath("./span[@class='status']")[0]
+        status_string = status_block.xpath("./span")[0].text.strip()
+        date = ""
+        if status_string != "None":
+            status_string = status_string.replace("Status:", "").strip()
+            date = status_block.xpath("./a")[0].text.replace("(", "").replace(")", "").strip()
+
+        offer = interest.xpath(".//div[@class='secondary_blk']/span[@class='offer']")[0].xpath("text()")[1].strip()
+
+        interest_row = [name, school, offer, status_string, date]
+        interests.append(interest_row)
+    return interests
+
+
 def run_full_year(year):
     print("Getting list of players from year: " + str(year))
     page_trees = get_year_pages(year)
@@ -77,14 +123,24 @@ def run_full_year(year):
         writer.writerows(players)
     print("Wrote player info to output/player_info_" + str(year) + ".csv")
 
+    interest_output = open("output/player_interests_" + str(year) + ".csv", "w")
+    interest_writer = csv.writer(interest_output)
+    print("Getting player interests")
     interest_urls = get_interest_urls(page_trees)
-
-    print(interest_urls)
+    for num, interest_url in enumerate(interest_urls):
+        if num % 50 == 0:
+            print(".", end="")
+            sys.stdout.flush()
+        interest_rows = get_player_interests(BASE_PLAYER_URL + interest_url)
+        interest_writer.writerows(interest_rows)
+    print("")
+    print("Wrote player interests to output/player_interests_" + str(year) + ".csv")
     print("============================================")
 
 
-# Interests: //ul[@class='recruit-interest-index_lst']//div[@class='left']
 if __name__ == "__main__":
+    # get_player_interests("http://247sports.com/Recruitment/Doug-Datish-28242/RecruitInterests")
+    print_header()
     print("============================================")
-    for year in range(2002, 2003):
-        run_full_year(year)
+    for cur_year in range(2002, 2003):
+        run_full_year(cur_year)
