@@ -142,5 +142,5 @@ if __name__ == "__main__":
     # get_player_interests("http://247sports.com/Recruitment/Doug-Datish-28242/RecruitInterests")
     print_header()
     print("============================================")
-    for cur_year in range(2002, 2003):
+    for cur_year in range(2002, 2018):
         run_full_year(cur_year)
