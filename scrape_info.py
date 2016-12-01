@@ -73,6 +73,7 @@ def get_interest_urls(trees):
         for player in players:
             link = player.xpath("./a[@class='toggle_anc2']")[0].get("href")
             link = link.replace("?view=Complex", "")
+            link = link.replace("\"", "")
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
@@ -82,8 +83,6 @@ def get_player_interests(url):
     interests = []
     res = requests.get(url, headers=HEADERS)
     time.sleep(1)
-    if res.status_code != 200:
-        return None
     try:
         tree = html.fromstring(res.content)
     except etree.ParserError:
@@ -141,7 +140,7 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # get_player_interests("http://247sports.com/Recruitment/Doug-Datish-28242/RecruitInterests")
+    # get_player_interests("http://247sports.com/Player/James-%22Leon%22-Pinkney-51332/RecruitInterests")
     print_header()
     print("============================================")
     for cur_year in range(2002, 2018):
