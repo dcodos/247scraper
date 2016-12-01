@@ -19,6 +19,7 @@ def print_header():
                                           |_|              """
     print(head)
 
+
 def get_year_pages(year):
     pages = []
     page = 1
@@ -46,6 +47,8 @@ def get_player_info(trees):
         for player in players:
             info = player.xpath(".//div[@class='playerinfo_blk']")[0]
             name = info.xpath("./a")[0].text.strip()
+            profile_url_info = info.xpath("./a")[0].get("href").split("-")
+            player_id = profile_url_info[len(profile_url_info) - 1]
             location = info.xpath("./span")[0].text.strip().replace("(HS)", "")
             hs = location.split("(")[0].strip()
             city = location.split("(")[1].split(",")[0].strip()
@@ -61,7 +64,7 @@ def get_player_info(trees):
                 element_class = element.get("class")
                 if element_class == "yellow":
                     stars += 1
-            player_row = [name, city, state, hs, position, height, weight, stars, rating]
+            player_row = [player_id, name, city, state, hs, position, height, weight, stars, rating]
             player_list.append(player_row)
     return player_list
 
@@ -91,13 +94,14 @@ def get_player_interests(url):
         return None
 
     interest_list = tree.xpath("//ul[@class='recruit-interest-index_lst']/li[not(@class)]")
-    name = tree.xpath("//a[@class='name']")[0].text.strip()
+    profile_url_info = tree.xpath("//a[@class='name']")[0].get("href").split("-")
+    player_id = profile_url_info[len(profile_url_info) - 1]
 
     for interest in interest_list:
         try:
             first_blk = interest.xpath(".//div[@class='first_blk']")[0]
         except IndexError:
-            print(name + " " + str(len(interest_list)) + " " + url)
+            print(player_id + " " + str(len(interest_list)) + " " + url)
             #print(etree.tostring(interest))
             continue
         school = first_blk.xpath("./a")[0].text.strip()
@@ -110,7 +114,7 @@ def get_player_interests(url):
 
         offer = interest.xpath(".//div[@class='secondary_blk']/span[@class='offer']")[0].xpath("text()")[1].strip()
 
-        interest_row = [name, school, offer, status_string, date]
+        interest_row = [player_id, school, offer, status_string, date]
         interests.append(interest_row)
     return interests
 
@@ -142,7 +146,8 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # get_player_interests("http://247sports.com/Player/James-%22Leon%22-Pinkney-51332/RecruitInterests")
+    # result = get_player_interests("http://247sports.com/Recruitment/Carlton-CJ-Woodard-53023/RecruitInterests")
+    # print(result)
     print_header()
     print("============================================")
     for cur_year in range(2002, 2018):
