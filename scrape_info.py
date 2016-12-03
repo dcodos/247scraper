@@ -108,7 +108,7 @@ def get_player_interests(url):
         status_block = first_blk.xpath("./span[@class='status']")[0]
         status_string = status_block.xpath("./span")[0].text.strip()
         date = ""
-        if status_string != "None":
+        if "Status" in status_string:
             status_string = status_string.replace("Status:", "").strip()
             date = status_block.xpath("./a")[0].text.replace("(", "").replace(")", "").strip()
 
@@ -146,7 +146,7 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # result = get_player_interests("http://247sports.com/Recruitment/Carlton-CJ-Woodard-53023/RecruitInterests")
+    # result = get_player_interests("http://247sports.com/Recruitment/Frank-Sanders-53942/RecruitInterests")
     # print(result)
     print_header()
     print("============================================")
