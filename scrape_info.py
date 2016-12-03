@@ -79,6 +79,7 @@ def get_interest_urls(trees):
             link = link.replace("\"", "")
             link = link.replace("(", "")
             link = link.replace(")", "")
+            link = link.replace(",", "")
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
@@ -150,5 +151,5 @@ if __name__ == "__main__":
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2002, 2018):
+    for cur_year in range(2003, 2018):
         run_full_year(cur_year)
