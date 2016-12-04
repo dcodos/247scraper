@@ -93,7 +93,7 @@ def get_interest_urls(trees):
 def get_player_interests(url):
     interests = []
     res = requests.get(url, headers=HEADERS)
-    time.sleep(1)
+    time.sleep(0.7)
     try:
         tree = html.fromstring(res.content)
     except etree.ParserError:
