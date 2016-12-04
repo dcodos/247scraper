@@ -81,7 +81,8 @@ def get_interest_urls(trees):
             link = link.replace(")", "")
             link = link.replace(",", "")
             if "43059" in link:
-                link = "http://247sports.com/Recruitment/Pookela-Ahmad-43059"
+                link = "/Recruitment/Pookela-Ahmad-43059"
+
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
@@ -149,7 +150,7 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # result = get_player_interests("http://247sports.com/Recruitment/Frank-Sanders-53942/RecruitInterests")
+    # result = get_player_interests("http://247sports.com/Recruitment/Pookela-Ahmad-43059/RecruitInterests")
     # print(result)
     print_header()
     print("============================================")
