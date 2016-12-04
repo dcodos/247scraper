@@ -22,8 +22,8 @@ def print_header():
 
 def get_year_pages(year):
     pages = []
-    page = 1
-    while True:
+    page = 15
+    while page < 17:
         year_url = "http://247sports.com/Season/" + str(year) + "-Football/CompositeRecruitRankings?ViewPath=~%2FViews%2FPlayerSportRanking%2F_SimpleSetForSeason.ascx&InstitutionGroup=HighSchool&Page=" + str(page)
         res = requests.get(year_url, headers=HEADERS)
         print(".", end="")
@@ -47,13 +47,14 @@ def get_player_info(trees):
         for player in players:
             info = player.xpath(".//div[@class='playerinfo_blk']")[0]
             name = info.xpath("./a")[0].text.strip()
-            print(name)
             profile_url_info = info.xpath("./a")[0].get("href").split("-")
             player_id = profile_url_info[len(profile_url_info) - 1]
-            location = info.xpath("./span")[0].text.strip().replace("(HS)", "").replace("(campus)", "").replace("(chart", "").replace("(lionel)", "")
-            hs = location.split("(")[0].strip()
-            city = location.split("(")[1].split(",")[0].strip()
-            state = location.split("(")[1].split(",")[1].replace(")", "").strip()
+            location = info.xpath("./span")[0].text.strip()
+            city_state_start = location.rfind("(")
+            hs = location[:city_state_start].strip()
+            city_state = location[city_state_start + 1:]
+            city = city_state.split(",")[0].strip()
+            state = city_state.split(",")[1].replace(")", "").strip()
             rating_info = player.xpath(".//div[@class='playerinfo_blk skn2']")[0]
             position = rating_info.xpath("./span[@class='position']")[0].text.strip()
             height = rating_info.xpath("./span[@class='height']")[0].text.strip()
