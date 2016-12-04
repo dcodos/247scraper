@@ -47,7 +47,6 @@ def get_player_info(trees):
         for player in players:
             info = player.xpath(".//div[@class='playerinfo_blk']")[0]
             name = info.xpath("./a")[0].text.strip()
-            print(name)
             profile_url_info = info.xpath("./a")[0].get("href").split("-")
             player_id = profile_url_info[len(profile_url_info) - 1]
             location = info.xpath("./span")[0].text.strip()
