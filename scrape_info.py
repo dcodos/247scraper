@@ -47,14 +47,19 @@ def get_player_info(trees):
         for player in players:
             info = player.xpath(".//div[@class='playerinfo_blk']")[0]
             name = info.xpath("./a")[0].text.strip()
+            print(name)
             profile_url_info = info.xpath("./a")[0].get("href").split("-")
             player_id = profile_url_info[len(profile_url_info) - 1]
             location = info.xpath("./span")[0].text.strip()
             city_state_start = location.rfind("(")
             hs = location[:city_state_start].strip()
             city_state = location[city_state_start + 1:]
+            state = "NA"
             city = city_state.split(",")[0].strip()
-            state = city_state.split(",")[1].replace(")", "").strip()
+            if city == "":
+                city = "NA"
+            if len(city_state.split(",")) > 1:
+                state = city_state.split(",")[1].replace(")", "").strip()
             rating_info = player.xpath(".//div[@class='playerinfo_blk skn2']")[0]
             position = rating_info.xpath("./span[@class='position']")[0].text.strip()
             height = rating_info.xpath("./span[@class='height']")[0].text.strip()
@@ -156,5 +161,5 @@ if __name__ == "__main__":
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2002, 2018):
+    for cur_year in range(2007, 2018):
         run_full_year(cur_year)
