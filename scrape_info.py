@@ -50,7 +50,7 @@ def get_player_info(trees):
             print(name)
             profile_url_info = info.xpath("./a")[0].get("href").split("-")
             player_id = profile_url_info[len(profile_url_info) - 1]
-            location = info.xpath("./span")[0].text.strip().replace("(HS)", "").replace("(campus)", "").replace("(lionel)", "")
+            location = info.xpath("./span")[0].text.strip().replace("(HS)", "").replace("(campus)", "").replace("(chart", "").replace("(lionel)", "")
             hs = location.split("(")[0].strip()
             city = location.split("(")[1].split(",")[0].strip()
             state = location.split("(")[1].split(",")[1].replace(")", "").strip()
