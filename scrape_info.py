@@ -80,6 +80,7 @@ def get_interest_urls(trees):
             link = link.replace("(", "")
             link = link.replace(")", "")
             link = link.replace(",", "")
+            link = link.replace("Ã¢â‚¬Ëœ", "")
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
