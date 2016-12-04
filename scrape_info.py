@@ -80,7 +80,8 @@ def get_interest_urls(trees):
             link = link.replace("(", "")
             link = link.replace(")", "")
             link = link.replace(",", "")
-            link = link.replace("Ã¢â‚¬Ëœ", "")
+            if "43059" in link:
+                link = "http://247sports.com/Recruitment/Pookela-Ahmad-43059"
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
