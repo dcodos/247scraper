@@ -80,6 +80,8 @@ def get_interest_urls(trees):
     for tree in trees:
         players = tree.xpath("//li[@class='team_itm']")
         for player in players:
+            if len(player.xpath("./a[@class='toggle_anc2']")) < 1:
+                continue
             link = player.xpath("./a[@class='toggle_anc2']")[0].get("href")
             link = link.replace("?view=Complex", "")
             link = link.replace("\"", "")
@@ -161,5 +163,5 @@ if __name__ == "__main__":
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2012, 2018):
+    for cur_year in range(2013, 2018):
         run_full_year(cur_year)
