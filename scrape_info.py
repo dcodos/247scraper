@@ -161,5 +161,5 @@ if __name__ == "__main__":
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2007, 2018):
+    for cur_year in range(2012, 2018):
         run_full_year(cur_year)
