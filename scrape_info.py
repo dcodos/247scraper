@@ -88,6 +88,7 @@ def get_interest_urls(trees):
             link = link.replace("(", "")
             link = link.replace(")", "")
             link = link.replace(",", "")
+            link = link.replace("\t", "")
             if "43059" in link:
                 link = "/Recruitment/Pookela-Ahmad-43059"
             if "19060" in link:
@@ -159,9 +160,9 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # result = get_player_interests("http://247sports.com/Recruitment/Pookela-Ahmad-43059/RecruitInterests")
+    # result = get_player_interests("http://247sports.com/Recruitment/Michael-Boland-30618/RecruitInterests")
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2013, 2018):
+    for cur_year in range(2013, 2014):
         run_full_year(cur_year)
