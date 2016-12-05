@@ -60,7 +60,11 @@ def get_player_info(trees):
             if len(city_state.split(",")) > 1:
                 state = city_state.split(",")[1].replace(")", "").strip()
             rating_info = player.xpath(".//div[@class='playerinfo_blk skn2']")[0]
-            position = rating_info.xpath("./span[@class='position']")[0].text.strip()
+            position = rating_info.xpath("./span[@class='position']")[0].text
+            if position is None:
+                position = ""
+            else:
+                position = position.strip()
             height = rating_info.xpath("./span[@class='height']")[0].text.strip()
             weight = rating_info.xpath("./span[@class='weight']")[0].text.strip()
             rating = rating_info.xpath("./span[@class='rating']")[0].xpath("text()")[1].strip()
@@ -164,5 +168,5 @@ if __name__ == "__main__":
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2013, 2018):
+    for cur_year in range(2015, 2018):
         run_full_year(cur_year)
