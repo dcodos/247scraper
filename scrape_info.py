@@ -88,7 +88,8 @@ def get_interest_urls(trees):
             link = link.replace(",", "")
             if "43059" in link:
                 link = "/Recruitment/Pookela-Ahmad-43059"
-
+            if "19060" in link:
+                link = "/Recruitment/Toms-Rivera-19060"
             link += "/RecruitInterests"
             url_list.append(link)
     return url_list
