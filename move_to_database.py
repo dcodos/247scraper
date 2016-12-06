@@ -1,19 +1,31 @@
 import sqlite3
 import os
 import csv
+from geopy import geocoders
 
 BASE = "output"
 
 
 def get_recruits(files):
+    gn = geocoders.GeoNames(username="dcodos", timeout=10)
     recruits = []
     for file in files:
         year = file.split("_")[2].replace(".csv", "")
         if "info" in file:
             with open(BASE + "/" + file) as f:
                 reader = csv.reader(f)
-                for row in reader:
+                for i, row in enumerate(reader):
+                    print(i)
                     row.append(year)
+                    city = row[2]
+                    state = row[3]
+                    location = gn.geocode(city + ", " + state)
+                    if location is not None:
+                        row.append(location.latitude)
+                        row.append(location.longitude)
+                    else:
+                        row.append(0)
+                        row.append(0)
                     recruits.append(row)
     return recruits
 
@@ -52,7 +64,7 @@ if __name__ == "__main__":
 
     cursor.execute('DROP TABLE IF EXISTS recruits')
     cursor.execute('DROP TABLE IF EXISTS interests')
-    cursor.execute('CREATE TABLE recruits (id INTEGER, name TEXT, city TEXT, state TEXT, hs TEXT, class INTEGER, position TEXT, height TEXT, weight INTEGER, stars INTEGER, rating DECIMAL)')
+    cursor.execute('CREATE TABLE recruits (id INTEGER, name TEXT, city TEXT, state TEXT, hs TEXT, lat DECIMAL, long DECIMAL, class INTEGER, position TEXT, height TEXT, weight INTEGER, stars INTEGER, rating DECIMAL)')
     cursor.execute('CREATE TABLE interests (id INTEGER PRIMARY KEY, recruit_id INTEGER, school TEXT, offer BOOLEAN, status TEXT, status_date DATE, FOREIGN KEY(recruit_id) REFERENCES recruits(id))')
     conn.commit()
 
@@ -61,7 +73,7 @@ if __name__ == "__main__":
     all_recruits = get_recruits(all_files)
     print(len(all_recruits))
     for recruit in all_recruits:
-        cursor.execute('INSERT INTO recruits (id, name, city, state, hs, position, height, weight, stars, rating, class) VALUES (?,?,?,?,?,?,?,?,?,?,?)', recruit)
+        cursor.execute('INSERT INTO recruits (id, name, city, state, hs, position, height, weight, stars, rating, class, lat, long) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)', recruit)
 
     all_interests = get_interests(all_files)
     print(len(all_interests))
