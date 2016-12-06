@@ -57,10 +57,12 @@ if __name__ == "__main__":
     all_files = os.listdir(BASE)
 
     all_recruits = get_recruits(all_files)
+    print(len(all_recruits))
     for recruit in all_recruits:
         cursor.execute('INSERT INTO recruits (id, name, city, state, hs, position, height, weight, stars, rating) VALUES (?,?,?,?,?,?,?,?,?,?)', recruit)
 
     all_interests = get_interests(all_files)
+    print(len(all_interests))
     for interest in all_interests:
         cursor.execute('INSERT INTO interests (recruit_id, school, offer, status, status_date) VALUES (?,?,?,?,?)', interest)
 
