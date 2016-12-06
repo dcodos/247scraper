@@ -50,7 +50,7 @@ if __name__ == "__main__":
 
     cursor.execute('DROP TABLE IF EXISTS recruits')
     cursor.execute('DROP TABLE IF EXISTS interests')
-    cursor.execute('CREATE TABLE recruits (id INTEGER PRIMARY KEY, name TEXT, city TEXT, state TEXT, hs TEXT, position TEXT, height TEXT, weight INTEGER, stars INTEGER, rating DECIMAL)')
+    cursor.execute('CREATE TABLE recruits (id INTEGER, name TEXT, city TEXT, state TEXT, hs TEXT, position TEXT, height TEXT, weight INTEGER, stars INTEGER, rating DECIMAL)')
     cursor.execute('CREATE TABLE interests (id INTEGER PRIMARY KEY, recruit_id INTEGER, school TEXT, offer BOOLEAN, status TEXT, status_date DATE, FOREIGN KEY(recruit_id) REFERENCES recruits(id))')
     conn.commit()
 
