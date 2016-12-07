@@ -7,7 +7,7 @@ BASE = "output"
 
 
 def get_recruits(files):
-    gn = geocoders.GeoNames(username="dcodos", timeout=10)
+    gn = geocoders.Nominatim(timeout=10)
     recruits = []
     for file in files:
         year = file.split("_")[2].replace(".csv", "")
@@ -26,6 +26,7 @@ def get_recruits(files):
                     else:
                         row.append(0)
                         row.append(0)
+                    print(row)
                     recruits.append(row)
     return recruits
 

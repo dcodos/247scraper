@@ -2,9 +2,7 @@ import sqlite3
 import tensorflow as tf
 import numpy as np
 from geopy import geocoders
-from tensorflow.examples.tutorials.mnist import input_data
 import random
-mnist = input_data.read_data_sets("/tmp/data/", one_hot = True)
 
 schools = []
 n_nodes_hl1 = 500
@@ -15,9 +13,6 @@ batch_size = 100
 
 x = tf.placeholder('float', [None, 3])
 y = tf.placeholder('float')
-
-conn = sqlite3.connect("recruit_db.sqlite")
-cursor = conn.cursor()
 
 def neural_network_model(data):
     hidden_1_layer = {'weights':tf.Variable(tf.random_normal([3, n_nodes_hl1])),
@@ -51,7 +46,7 @@ def train_neural_network(x):
     cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
     optimizer = tf.train.AdamOptimizer().minimize(cost)
 
-    hm_epochs = 10
+    hm_epochs = 100
     with tf.Session() as sess:
         sess.run(tf.initialize_all_variables())
 
@@ -73,46 +68,6 @@ def train_neural_network(x):
 
         accuracy = tf.reduce_mean(tf.cast(correct, 'float'))
         print('Accuracy:',accuracy.eval({x:test_x, y:test_y}))
-
-def get_unique_classes():
-    school_list = []
-    cursor.execute("SELECT DISTINCT i.school FROM recruits r INNER JOIN interests i ON r.id = i.recruit_id WHERE i.status = 'Committed' OR i.status = 'Enrolled' OR i.status = 'Signed'")
-
-    school_res = cursor.fetchall()
-    for row in school_res:
-        school_list.append(row[0])
-
-    return school_list
-
-def get_data():
-    featureset = []
-    gn = geocoders.GeoNames(username="dcodos")
-
-    cursor.execute("SELECT r.rating, r.city, r.state, i.school FROM recruits r INNER JOIN interests i ON r.id = i.recruit_id WHERE i.status = 'Committed' OR i.status = 'Enrolled' OR i.status = 'Signed' LIMIT 1000")
-
-    res = cursor.fetchall()
-    for i, row in enumerate(res):
-        print(i)
-        rating = row[0]
-        city = row[1]
-        state = row[2]
-        school = row[3]
-        location = gn.geocode(city + ", " + state)
-        lat = location.latitude
-        long = location.longitude
-        features = np.zeros(3)
-        features[0] = rating
-        features[1] = lat
-        features[2] = long
-        features = list(features)
-
-        classification = np.zeros(n_classes)
-        classification[schools.index(school)] = 1
-        classification = list(classification)
-
-        featureset.append([features, classification])
-
-    return featureset
 
 
 def split_data(featureset, test_percentage):
