@@ -137,7 +137,6 @@ def get_player_interests(url):
             visit_text = visit[0].xpath("text()")[0].strip()
 
         interest_row = [player_id, school, visit_text, offer, status_string, date]
-        print(interest_row)
         interests.append(interest_row)
     return interests
 
