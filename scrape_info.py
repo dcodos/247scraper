@@ -22,7 +22,7 @@ def print_header():
 
 def get_year_pages(year):
     pages = []
-    page = 64
+    page = 1
     while True:
         year_url = "http://247sports.com/Season/" + str(year) + "-Football/CompositeRecruitRankings?ViewPath=~%2FViews%2FPlayerSportRanking%2F_SimpleSetForSeason.ascx&InstitutionGroup=HighSchool&Page=" + str(page)
         res = requests.get(year_url, headers=HEADERS)
