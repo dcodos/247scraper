@@ -131,8 +131,13 @@ def get_player_interests(url):
             date = status_block.xpath("./a")[0].text.replace("(", "").replace(")", "").strip()
 
         offer = interest.xpath(".//div[@class='secondary_blk']/span[@class='offer']")[0].xpath("text()")[1].strip()
+        visit = interest.xpath(".//div[@class='secondary_blk']/span[@class='visit']/a")
+        visit_text = "none"
+        if len(visit) > 0:
+            visit_text = visit[0].xpath("text()")[0].strip()
 
-        interest_row = [player_id, school, offer, status_string, date]
+        interest_row = [player_id, school, visit_text, offer, status_string, date]
+        print(interest_row)
         interests.append(interest_row)
     return interests
 
@@ -164,9 +169,9 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # result = get_player_interests("http://247sports.com/Recruitment/Michael-Boland-30618/RecruitInterests")
+    # result = get_player_interests("http://247sports.com/Recruitment/Fotu-Leiato-80507/RecruitInterests")
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2000, 2002):
+    for cur_year in range(2014, 2017):
         run_full_year(cur_year)

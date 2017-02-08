@@ -5,65 +5,43 @@ import sys
 
 conn = sqlite3.connect("recruit_db.sqlite")
 cursor = conn.cursor()
+cursor2 = conn.cursor()
 csv.field_size_limit(sys.maxsize)
-
-places = {}
-
-def load_places():
-    with open("US.txt") as f:
-        reader = csv.reader(f, delimiter='\t')
-        total = 0
-        for row in reader:
-            names = []
-            state = row[10]
-            main_name = row[1]
-            ascii_name = row[2]
-            alt_names = row[3]
-            names.append(main_name)
-            names.append(ascii_name)
-            names += alt_names.split(",")
-            lat = row[4]
-            long = row[5]
-            for name in names:
-                name_state = name + "|" + state
-                places[name_state] = [lat, long]
-
-def geocode(city, state):
-    name_state = city + "|" + state
-    if name_state in places:
-        lat_long = places[name_state]
-        return lat_long
-    else:
-        print("NONE", city, state)
-        return [0,0]
 
 
 def get_data():
-    load_places()
     schools = get_unique_classes()
+    states = get_states()
     n_classes = len(schools)
     featureset = []
 
     print("Querying")
-    cursor.execute("SELECT r.rating, r.city, r.state, i.school FROM recruits r INNER JOIN interests i ON r.id = i.recruit_id WHERE i.status = 'Committed' OR i.status = 'Enrolled' OR i.status = 'Signed' LIMIT 1000")
-    none = 0
+    cursor.execute("""SELECT a.rating as 'rating', a.city as 'city', a.state as 'state', a.school as 'school', GROUP_CONCAT(i2.school, '|') FROM
+  (SELECT r.id, r.rating, r.city, r.state, i.school
+   FROM recruits r INNER JOIN interests i ON r.id = i.recruit_id
+   WHERE i.status = 'Committed' OR i.status = 'Enrolled' OR i.status = 'Signed') a
+INNER JOIN interests i2 ON a.id = i2.recruit_id
+GROUP BY 1, 2, 3, 4 ORDER BY 1 DESC""")
     res = cursor.fetchall()
     for i, row in enumerate(res):
+        # ints = cursor2.execute("SELECT i.school FROM interests i WHERE i.recruit_id = ?", (row[4],))
         print(i)
         rating = row[0]
         city = row[1]
         state = row[2]
         school = row[3]
+        interests = row[4].split("|")
+        # features = np.zeros(3)
+        # features[0] = rating
+        # features[1] = lat
+        # features[2] = long
 
-        location = geocode(city, state)
-        if location == [0,0]:
-            none += 1
-        lat = location[0]
-        long = location[1]
-        features = np.zeros(3)
+        features = np.zeros(1 + len(states) + len(schools))
         features[0] = rating
-        features[1] = lat
-        features[2] = long
+        features[states.index(state) + 1] = 1
+        for interest in interests:
+            features[1 + len(states) + schools.index(interest)] = 1
+
         features = list(features)
 
         classification = np.zeros(n_classes)
@@ -71,13 +49,12 @@ def get_data():
         classification = list(classification)
 
         featureset.append([features, classification])
-    print(none)
     return featureset
 
 
 def get_unique_classes():
     school_list = []
-    cursor.execute("SELECT DISTINCT i.school FROM recruits r INNER JOIN interests i ON r.id = i.recruit_id WHERE i.status = 'Committed' OR i.status = 'Enrolled' OR i.status = 'Signed'")
+    cursor.execute("SELECT DISTINCT i.school FROM recruits r INNER JOIN interests i ON r.id = i.recruit_id")
 
     school_res = cursor.fetchall()
     for row in school_res:
@@ -85,4 +62,13 @@ def get_unique_classes():
 
     return school_list
 
-get_data()
+
+def get_states():
+    state_list = []
+    cursor.execute("SELECT DISTINCT r.state FROM recruits r")
+
+    state_res = cursor.fetchall()
+    for row in state_res:
+        state_list.append(row[0])
+
+    return state_list

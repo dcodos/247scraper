@@ -3,19 +3,20 @@ import tensorflow as tf
 import numpy as np
 from geopy import geocoders
 import random
+from recruit_dao import *
 
 schools = []
-n_nodes_hl1 = 500
-n_nodes_hl2 = 500
-n_nodes_hl3 = 500
-n_classes = 303
+n_nodes_hl1 = 400
+n_nodes_hl2 = 400
+n_nodes_hl3 = 400
+n_classes = 419
 batch_size = 100
 
-x = tf.placeholder('float', [None, 3])
+x = tf.placeholder('float', [None, 481])
 y = tf.placeholder('float')
 
 def neural_network_model(data):
-    hidden_1_layer = {'weights':tf.Variable(tf.random_normal([3, n_nodes_hl1])),
+    hidden_1_layer = {'weights':tf.Variable(tf.random_normal([481, n_nodes_hl1])),
                       'biases':tf.Variable(tf.random_normal([n_nodes_hl1]))}
 
     hidden_2_layer = {'weights':tf.Variable(tf.random_normal([n_nodes_hl1, n_nodes_hl2])),
@@ -44,9 +45,9 @@ def neural_network_model(data):
 def train_neural_network(x):
     prediction = neural_network_model(x)
     cost = tf.reduce_mean( tf.nn.softmax_cross_entropy_with_logits(prediction,y) )
-    optimizer = tf.train.AdamOptimizer().minimize(cost)
+    optimizer = tf.train.AdamOptimizer(learning_rate=0.001).minimize(cost)
 
-    hm_epochs = 100
+    hm_epochs = 15
     with tf.Session() as sess:
         sess.run(tf.initialize_all_variables())
 
@@ -80,13 +81,10 @@ def split_data(featureset, test_percentage):
 
 if __name__ == "__main__":
     print("Getting classes")
-    schools = get_unique_classes()
-    n_classes = len(schools)
     print("Getting data")
     features = get_data()
     random.shuffle(features)
     features = np.array(features)
-
     train_x, train_y, test_x, test_y = split_data(features, 0.1)
 
     train_neural_network(x)
