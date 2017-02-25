@@ -225,24 +225,24 @@ def run_full_year(year):
     print("Parsing info from list of players")
     players = get_player_info(page_trees)
 
-    with open("output/player_info_" + str(year) + ".csv", "w") as output:
-        writer = csv.writer(output)
-        writer.writerows(players)
-    print("Wrote player info to output/player_info_" + str(year) + ".csv")
-
-    interest_output = open("output/player_interests_" + str(year) + ".csv", "w")
-    interest_writer = csv.writer(interest_output)
-    print("Getting player interests")
-    interest_urls = get_interest_urls(page_trees)
-    for num, interest_url in enumerate(interest_urls):
-        if num % 50 == 0:
-            print(".", end="")
-            sys.stdout.flush()
-        interest_rows = get_player_interests(BASE_PLAYER_URL + interest_url)
-        interest_writer.writerows(interest_rows)
-    print("")
-    print("Wrote player interests to output/player_interests_" + str(year) + ".csv")
-    print("============================================")
+    # with open("output/player_info_" + str(year) + ".csv", "w") as output:
+    #     writer = csv.writer(output)
+    #     writer.writerows(players)
+    # print("Wrote player info to output/player_info_" + str(year) + ".csv")
+    #
+    # interest_output = open("output/player_interests_" + str(year) + ".csv", "w")
+    # interest_writer = csv.writer(interest_output)
+    # print("Getting player interests")
+    # interest_urls = get_interest_urls(page_trees)
+    # for num, interest_url in enumerate(interest_urls):
+    #     if num % 50 == 0:
+    #         print(".", end="")
+    #         sys.stdout.flush()
+    #     interest_rows = get_player_interests(BASE_PLAYER_URL + interest_url)
+    #     interest_writer.writerows(interest_rows)
+    # print("")
+    # print("Wrote player interests to output/player_interests_" + str(year) + ".csv")
+    # print("============================================")
 
     timeline_output = open("output/player_timeline_" + str(year) + ".csv", "w")
     timeline_writer = csv.writer(timeline_output)
@@ -267,5 +267,5 @@ if __name__ == "__main__":
     # print(result)
     print_header()
     print("============================================")
-    for cur_year in range(2017, 2018):
+    for cur_year in range(2014, 2018):
         run_full_year(cur_year)
