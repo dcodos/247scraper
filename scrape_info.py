@@ -132,7 +132,6 @@ def get_player_timelines(url):
 
     profile_url_info = tree.xpath("//a[@class='name']")[0].get("href").split("-")
     player_id = profile_url_info[len(profile_url_info) - 1]
-
     current_entry = 1
     while cur_page <= num_pages:
         timeline_list = tree.xpath("//ul[@class='timeline-event-index_lst']/li[not(@class)]")
@@ -142,8 +141,8 @@ def get_player_timelines(url):
             headline_items = headline.split(":")
             date = headline_items[0]
             event_type = headline_items[1].strip()
-            school = extract_school(event_type, info)
-            timeline_row = [player_id, current_entry, date, event_type, school, info]
+            # school = extract_school(event_type, info)
+            timeline_row = [player_id, current_entry, date, event_type, info]
             timelines.append(timeline_row)
             current_entry += 1
         cur_page += 1
@@ -169,6 +168,7 @@ def extract_school(event_type, info):
     elif event_type == "Offer":
         school = info.split("offer")[0].strip()
     elif event_type == "Unofficial Visit":
+        print(info.split("visits"))
         school = info.split("visits")[1].strip()
     elif event_type == "School Camp":
         school = info.replace("camp", "").split("attends")[1].strip()
@@ -260,7 +260,7 @@ def run_full_year(year):
 
 
 if __name__ == "__main__":
-    # result = get_player_timelines("http://247sports.com/Player/34818/TimelineEvents")
+    # result = get_player_timelines("http://247sports.com/Player/14147/TimelineEvents")
     # result = get_player_timelines("http://247sports.com/Player/Keyvone-Bruton-34787/TimelineEvents")
     # print(result)
     # result = get_player_interests("http://247sports.com/Recruitment/Fotu-Leiato-80507/RecruitInterests")
