@@ -117,7 +117,7 @@ def get_timeline_urls(trees):
 def get_player_timelines(url):
     timelines = []
     res = requests.get(url, headers=HEADERS)
-    time.sleep(0.7)
+    time.sleep(0.5)
     try:
         tree = html.fromstring(res.content)
     except etree.ParseError:
@@ -136,20 +136,24 @@ def get_player_timelines(url):
     while cur_page <= num_pages:
         timeline_list = tree.xpath("//ul[@class='timeline-event-index_lst']/li[not(@class)]")
         for timeline_item in timeline_list:
+            img_url = timeline_item.xpath(".//img")[0].get("src")
             headline = timeline_item.xpath(".//b")[0].text.strip()
-            info = timeline_item.xpath(".//p")[1].text.strip()
+            info = ""
+            info_item = timeline_item.xpath(".//p[normalize-space(text())]")
+            if len(info_item) > 0:
+                info = info_item[0].text.strip()
             headline_items = headline.split(":")
             date = headline_items[0]
             event_type = headline_items[1].strip()
-            # school = extract_school(event_type, info)
-            timeline_row = [player_id, current_entry, date, event_type, info]
+
+            timeline_row = [player_id, current_entry, date, event_type, info, img_url]
             timelines.append(timeline_row)
             current_entry += 1
         cur_page += 1
         if cur_page <= num_pages:
             next_page_url = url + "?page=" + str(cur_page)
             res = requests.get(next_page_url, headers=HEADERS)
-            time.sleep(0.7)
+            time.sleep(0.5)
             try:
                 tree = html.fromstring(res.content)
             except etree.ParseError:
@@ -262,10 +266,12 @@ def run_full_year(year):
 if __name__ == "__main__":
     # result = get_player_timelines("http://247sports.com/Player/14147/TimelineEvents")
     # result = get_player_timelines("http://247sports.com/Player/Keyvone-Bruton-34787/TimelineEvents")
-    # print(result)
+    result = get_player_timelines("http://247sports.com/Player/Ross-Pierschbacher-13893/TimelineEvents")
+    print(result)
     # result = get_player_interests("http://247sports.com/Recruitment/Fotu-Leiato-80507/RecruitInterests")
     # print(result)
-    print_header()
-    print("============================================")
-    for cur_year in range(2014, 2018):
-        run_full_year(cur_year)
+
+    # print_header()
+    # print("============================================")
+    # for cur_year in range(2014, 2018):
+    #     run_full_year(cur_year)
