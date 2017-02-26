@@ -266,12 +266,12 @@ def run_full_year(year):
 if __name__ == "__main__":
     # result = get_player_timelines("http://247sports.com/Player/14147/TimelineEvents")
     # result = get_player_timelines("http://247sports.com/Player/Keyvone-Bruton-34787/TimelineEvents")
-    result = get_player_timelines("http://247sports.com/Player/Ross-Pierschbacher-13893/TimelineEvents")
-    print(result)
+    # result = get_player_timelines("http://247sports.com/Player/Ross-Pierschbacher-13893/TimelineEvents")
+    # print(result)
     # result = get_player_interests("http://247sports.com/Recruitment/Fotu-Leiato-80507/RecruitInterests")
     # print(result)
 
-    # print_header()
-    # print("============================================")
-    # for cur_year in range(2014, 2018):
-    #     run_full_year(cur_year)
+    print_header()
+    print("============================================")
+    for cur_year in range(2014, 2018):
+        run_full_year(cur_year)
